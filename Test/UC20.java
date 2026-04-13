@@ -1,19 +1,24 @@
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * UC20: Defensive State Validation
+ * Ensures the system fails fast if the train state is invalid.
+ */
 public class DefensiveSearchManager {
+
     public static void main(String[] args) {
-        // 1. Initialize an empty list to simulate an unassigned train
+        // Initialize an empty list (Invalid State for searching)
         List<String> emptyConsist = new ArrayList<>();
 
         System.out.println("--- UC20: Defensive State Validation (Fail-Fast) ---");
 
         try {
             System.out.println("Attempting to search in an empty consist...");
-            // 2. Trigger the search operation
+            // This call should trigger the guard clause
             findBogieInTrain(emptyConsist, "BG101");
         } catch (IllegalStateException e) {
-            // 3. Catch the state-related error
+            // Catching the state error defined in the guard clause
             System.err.println("CRITICAL ERROR: " + e.getMessage());
         }
 
@@ -22,22 +27,24 @@ public class DefensiveSearchManager {
 
     /**
      * Searches for a bogie ID but validates the train state first.
+     * @param consist List of bogie IDs
+     * @param targetId ID to search for
      * @throws IllegalStateException if the train has no bogies.
      */
     public static void findBogieInTrain(List<String> consist, String targetId) {
-        // 4. State Validation (Defensive Programming)
+        // GUARD CLAUSE: Defensive Validation
         if (consist == null || consist.isEmpty()) {
             throw new IllegalStateException("Search Operation Denied: The train consist is empty. " +
                     "Please attach bogies before searching.");
         }
 
-        // 5. If state is valid, search logic proceeds (Linear Search example)
+        // Search logic only runs if the state is valid
         for (String id : consist) {
             if (id.equals(targetId)) {
-                System.out.println("Bogie found!");
+                System.out.println("Bogie " + targetId + " found!");
                 return;
             }
         }
-        System.out.println("Bogie not found.");
+        System.out.println("Bogie " + targetId + " not found.");
     }
 }
